@@ -29,3 +29,28 @@ export const publishToQueue = async (queue: string, message: object) => {
     persistent: true,
   });
 };
+
+export const consumeQueue = async (queue: string) => {
+  if (!channel) throw new Error("RabbitMQ not initialized");
+
+  await channel.assertQueue(queue, { durable: true });
+
+  await channel.consume( queue, async (msg) => {
+      if (!msg) {
+        console.error("Received null message");
+        return;
+      }
+
+      try {
+        const data = JSON.parse(msg.content.toString());
+        console.log("Received message:", data);
+
+        channel.ack(msg);
+      } catch (error) {
+        console.error("Error processing message:", error);
+        channel.nack(msg, false, false);
+      }
+    },
+    { noAck: false }
+  );
+};
