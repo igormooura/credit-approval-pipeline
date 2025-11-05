@@ -1,9 +1,8 @@
 import { Router } from "express";
-import { createProposal } from "../controller/proposalController";
-
+import { createProposalController } from "../controller/proposalController.ts"
 
 const router = Router();
 
-router.post("/proposals", createProposal);
+router.post("/proposals", createProposalController);
 
 export default router;
