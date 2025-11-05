@@ -1,23 +1,24 @@
 import { Request, Response } from "express";
-import { createProposalService } from "../service/prosalService.js";
-import { proposalSchema } from "../validators/proposalSchema.js";
-import { publishToQueue } from "../queues/rabbitmq.js";
+import { createProposalService } from "../service/proposalService.ts";
+import { proposalSchema } from "../validators/proposalSchema.ts";
 
-export const createProposal = async (req: Request, res: Response): Promise<void> => {
+export const createProposalController = async (req: Request, res: Response): Promise<void> => {
   try {
-    const data = proposalSchema.parse(req.body)
+  
+    const proposals_queue = process.env.PROPOSALS_QUEUE;
 
-    const proposal = await createProposalService(data)
+    if (!proposals_queue) throw new Error("PROPOSALS_QUEUE environment variable is not set.");
+    
+    const data = proposalSchema.parse(req.body);
 
-    await publishToQueue("proposals.received", {proposalId : proposal.id})
+    const proposal = await createProposalService(data);
 
     res.status(202).json({
       message: "Proposal created successfully",
       proposal: proposal.id,
     });
   } catch (error: any) {
-
-     if (error.name === "ZodError") {
+    if (error.name === "ZodError") {
       res.status(400).json({ error: error.errors });
       return;
     }

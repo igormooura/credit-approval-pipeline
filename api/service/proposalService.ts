@@ -1,11 +1,15 @@
-// src/services/createProposalService.ts
-import { PrismaClient } from "../../generated/prisma";
-import { ProposalInput } from "../validators/proposalSchema.js";
+import { PrismaClient } from "../../generated/prisma/index.js";
+import { publishToQueue } from "../queues/rabbitmq.ts";
+import { ProposalInput } from "../validators/proposalSchema.ts";
 
 const prisma = new PrismaClient();
 
 export const createProposalService = async ({ CPF, fullName, income }: ProposalInput) => {
   
+  const proposals_queue = process.env.PROPOSALS_QUEUE;
+  
+  if(!proposals_queue) throw new Error("NO proposal's queue")
+
   const existing = await prisma.proposal.findUnique({ where: { CPF } });
   if (existing) {
     throw new Error("there's 1 person using this CPF");
@@ -19,6 +23,8 @@ export const createProposalService = async ({ CPF, fullName, income }: ProposalI
       status: "RECEIVED",
     },
   });
+
+  await publishToQueue(proposals_queue, { proposalId: proposal.id });
 
   return proposal;
 };
