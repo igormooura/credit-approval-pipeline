@@ -3,8 +3,7 @@ import { createServer } from 'node:http'
 import { configDotenv } from 'dotenv';
 import { connectWithRabbitMQ } from './queues/rabbitmq.ts';
 import router from './router/proposalRoutes.ts';
-
-
+import { creditAnalysisWorker } from './workers/creditAnalysisWorker.ts';
 
 configDotenv()
 
@@ -21,6 +20,7 @@ async function startApp(){
 
     await connectWithRabbitMQ();
 
+     await creditAnalysisWorker();
 
     server.listen(3000, () =>{
       console.log("Running on 3000")

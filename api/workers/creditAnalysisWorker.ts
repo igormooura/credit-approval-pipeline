@@ -1,9 +1,8 @@
-import type { Request, Response } from "express";
-import { consumeQueue } from "../../queues/rabbitmq.ts";
-import { creditAnalysisService } from "../../service/creditAnalysisService.ts";
+import { consumeQueue } from "../queues/rabbitmq.ts";
+import { creditAnalysisService } from "../service/creditAnalysisService.ts";
 
 
-export const creditAnalysisController = async ( req: Request, res: Response) => { 
+export const creditAnalysisWorker = async ( ) => { 
     try{ 
 
         const proposals_queue = process.env.PROPOSALS_QUEUE
@@ -18,9 +17,8 @@ export const creditAnalysisController = async ( req: Request, res: Response) => 
         
         })
 
-        res.status(200).json("Credit analysis has been done")
 
     } catch(error: any) { 
-        res.status(500).json({ error: error.message || "Error consuming queue" });
+       console.error(error.message);
     }
 }
