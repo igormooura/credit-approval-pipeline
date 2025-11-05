@@ -5,7 +5,9 @@ let channel: amqp.Channel;
 
 export const connectWithRabbitMQ = async (): Promise<amqp.Channel> => {
   try {
-    const RABBITMQ_URL = process.env.RABBITMQ_URL || "";
+    const RABBITMQ_URL = `${process.env.RABBITMQ_URL}`;
+
+    if(!RABBITMQ_URL) throw new Error ("No connection with rabbitmq")
 
     const connection = await amqp.connect(RABBITMQ_URL);
 
@@ -30,27 +32,13 @@ export const publishToQueue = async (queue: string, message: object) => {
   });
 };
 
-export const consumeQueue = async (queue: string) => {
-  if (!channel) throw new Error("RabbitMQ not initialized");
-
+export const consumeQueue = async (queue: string, callback: (msg: amqp.ConsumeMessage) => void) => {
+  if (!channel) throw new Error("RabbitMQ channel not initialized");
   await channel.assertQueue(queue, { durable: true });
-
-  await channel.consume( queue, async (msg) => {
-      if (!msg) {
-        console.error("Received null message");
-        return;
-      }
-
-      try {
-        const data = JSON.parse(msg.content.toString());
-        console.log("Received message:", data);
-
-        channel.ack(msg);
-      } catch (error) {
-        console.error("Error processing message:", error);
-        channel.nack(msg, false, false);
-      }
-    },
-    { noAck: false }
-  );
+  channel.consume(queue, (msg) => {
+    if (msg) {
+      callback(msg);
+      channel.ack(msg);
+    }
+  });
 };
