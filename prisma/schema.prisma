@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Proposal {
+  id     String   @id @default(uuid())
+  CPF    String   @unique
+  fullName String 
+  income Float
+  status     String   @default("RECEIVED")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  creditScore      Int?
+  fraudCheckResult Boolean?
+  calculatedLimit  Float?
+}
