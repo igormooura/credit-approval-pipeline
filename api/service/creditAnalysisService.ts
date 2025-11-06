@@ -13,24 +13,21 @@ export const creditAnalysisService = async (proposalId: string) => {
   if (!proposal) throw new Error(`Proposal with ID ${proposalId} not found`);
 
   const score = Math.floor(Math.random() * (900 - 300 + 1)) + 300;
-  const fraudCheckResult = Math.random() > 0.1;
-  const status = score >= 600 && fraudCheckResult ? "APPROVED" : "REJECTED";
-  const calculatedLimit = status === "APPROVED" ? score * 5 : 0;
+  
+  const nextStatus = "PENDING_IDENTITY_CHECK"
 
   const updatedProposal = await prisma.proposal.update({
     where: { id: proposalId },
     data: {
       creditScore: score,
-      fraudCheckResult,
-      calculatedLimit,
-      status,
+      status: nextStatus,
       updatedAt: new Date(),
     },
   });
 
-  const resultsQueue = process.env.CREDIT_RESULTS_QUEUE;
-  if (resultsQueue) {
-    await publishToQueue(resultsQueue, updatedProposal);
+  const identity_check_queue = process.env.IDENTITY_QUEUE;
+  if (identity_check_queue) {
+    await publishToQueue(identity_check_queue, updatedProposal);
   }
 
   return updatedProposal;
