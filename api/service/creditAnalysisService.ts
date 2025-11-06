@@ -25,9 +25,9 @@ export const creditAnalysisService = async (proposalId: string) => {
     },
   });
 
-  const identity_check_queue = process.env.IDENTITY_QUEUE;
-  if (identity_check_queue) {
-    await publishToQueue(identity_check_queue, updatedProposal);
+  const credit_analysis_queue = process.env.CREDIT_ANALYSIS_QUEUE;
+  if (credit_analysis_queue) {
+    await publishToQueue(credit_analysis_queue, updatedProposal);
   }
 
   return updatedProposal;

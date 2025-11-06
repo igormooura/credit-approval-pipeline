@@ -9,8 +9,8 @@ export const creditAnalysisWorker = async ( ) => {
         if (!proposals_queue) throw new Error ("No queue defined")
 
         await consumeQueue(proposals_queue, async(msg) => {
-            const content = JSON.parse(msg.content.toString())
-            const proposalId = content.proposalId;
+            const proposal_content = JSON.parse(msg.content.toString())
+            const proposalId = proposal_content.proposalId;
 
             const result = await creditAnalysisService(proposalId);
             console.log(result)
