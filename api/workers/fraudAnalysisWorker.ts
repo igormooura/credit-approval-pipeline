@@ -1,4 +1,5 @@
 import { consumeQueue } from "../queues/rabbitmq"
+import { fraudAnalysisService } from "../service/fraudAnalysisService";
 
 export const fraudAnalysisWorker = async () =>{
     try {
@@ -11,7 +12,7 @@ export const fraudAnalysisWorker = async () =>{
 
                 if (!proposalId) throw new Error("There's no proposal id")
 
-                //await fraudAnalysisService(proposalId)
+                await fraudAnalysisService(proposalId)
 
                 await new Promise(resolve => setTimeout(resolve, 500))
             })  
