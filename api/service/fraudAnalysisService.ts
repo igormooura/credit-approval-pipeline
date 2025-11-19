@@ -21,10 +21,10 @@ export const fraudAnalysisService = async (proposalId: string) => {
     },
   });
 
-  const limit_queue = process.env.LIMIT_CALCULATION_QUEUE;
+  const fraud_queue = process.env.FRAUD_QUEUE;
   
-  if (limit_queue) {
-    await publishToQueue(limit_queue, { proposalId: updatedProposal.id });
+  if (fraud_queue) {
+    await publishToQueue(fraud_queue, { proposalId: updatedProposal.id });
   }
 
   return updatedProposal;
