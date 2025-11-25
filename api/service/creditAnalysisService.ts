@@ -2,8 +2,8 @@
 
 import { PrismaClient } from "../../generated/prisma/index.js";
 import { publishToQueue } from "../queues/rabbitmq.ts";
+import prisma from "./database.service.ts";
 
-const prisma = new PrismaClient();
 
 export const creditAnalysisService = async (proposalId: string) => {
   const proposal = await prisma.proposal.findUnique({

@@ -1,7 +1,6 @@
 import { PrismaClient } from "../../generated/prisma/index.js";
 import { publishToQueue } from "../queues/rabbitmq.js";
-
-const prisma = new PrismaClient();
+import prisma from "./database.service.js";
 
 export const fraudAnalysisService = async (proposalId: string) => {
   const proposal = await prisma.proposal.findUnique({
