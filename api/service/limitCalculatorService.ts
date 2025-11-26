@@ -37,9 +37,9 @@ export const limitCalculatorService = async (proposalId: string) => {
     },
   });
 
-  const exchangeName = process.env.APPROVED_EXCHANGE || 'proposal_approved_fanout';
+  if(!process.env.APPROVED_EXCHANGE) throw new Error("No approved Exchange")
 
-  await publishToExchange(exchangeName, {
+  await publishToExchange(process.env.APPROVED_EXCHANGE, {
     proposalId: updatedProposal.id,
     customerName: updatedProposal.fullName,
     cardType: cardType,
