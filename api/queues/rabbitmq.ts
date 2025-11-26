@@ -42,3 +42,13 @@ export const consumeQueue = async (queue: string, callback: (msg: amqp.ConsumeMe
     }
   });
 };
+
+export const publishToExchange = async(exchange: string, msg: object) =>{ // exchange = distribuition to queues
+  if(!channel) throw new Error("RabbitMQ not initilized");
+
+  await channel.assertExchange(exchange, "fanout", {durable: true});
+
+  channel.publish(exchange, "", Buffer.from(JSON.stringify(msg)))
+
+  console.log("enviado pro pub/sub")
+}
