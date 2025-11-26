@@ -6,7 +6,7 @@ const creditAnalysisHandler = async(msg: any) =>{
     const proposal_content = JSON.parse(msg.content.toString())
     const proposalId = proposal_content.proposalId
 
-    const result = await creditAnalysisService(proposalId)
+    await creditAnalysisService(proposalId)
 }
 
 export const creditAnalysisWorker = async ( ) => { 
