@@ -1,4 +1,3 @@
-import { PrismaClient } from "../../generated/prisma/index.js";
 import { publishToQueue } from "../queues/rabbitmq.js";
 import prisma from "./database.service.js";
 
@@ -9,21 +8,29 @@ export const fraudAnalysisService = async (proposalId: string) => {
 
   if (!proposal) throw new Error(`Proposal ${proposalId} not found`);
 
-  const isSafe = Math.random() > 0.1; 
+  const hasValidName = proposal.fullName.trim().split(" ").length >= 2;
+  const isBlacklisted = proposal.CPF === "00000000000";
+  const isSuspiciousFinancial = proposal.income > 50000 && (proposal.creditScore || 0) < 400;
+
+  const isSafe = hasValidName && !isBlacklisted && !isSuspiciousFinancial;
+
+  const newStatus = isSafe ? "PENDING_LIMIT_CALCULATION" : "REJECTED";
 
   const updatedProposal = await prisma.proposal.update({
     where: { id: proposalId },
     data: {
       fraudCheckResult: isSafe,
-      status: "PENDING_LIMIT_CALCULATION",
+      status: newStatus,
       updatedAt: new Date(),
     },
   });
 
-  const fraud_queue = process.env.FRAUD_QUEUE;
-  
-  if (fraud_queue) {
-    await publishToQueue(fraud_queue, { proposalId: updatedProposal.id });
+  if (isSafe) {
+    const nextQueue = process.env.LIMIT_CALCULATION_QUEUE;
+    
+    if (nextQueue) {
+      await publishToQueue(nextQueue, { proposalId: updatedProposal.id });
+    }
   }
 
   return updatedProposal;
