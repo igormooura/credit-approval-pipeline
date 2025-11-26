@@ -52,3 +52,16 @@ export const publishToExchange = async(exchange: string, msg: object) =>{ // exc
 
   console.log("enviado pro pub/sub")
 }
+
+export const bindQueueToExchange = async (queue: string, exchange: string) => {
+  if (!channel) throw new Error("RabbitMQ not initialized");
+
+  // Queue exists
+  await channel.assertQueue(queue, { durable: true });
+  
+  // Exchange exists
+  await channel.assertExchange(exchange, 'fanout', { durable: true });
+
+  await channel.bindQueue(queue, exchange, '');
+  
+};
