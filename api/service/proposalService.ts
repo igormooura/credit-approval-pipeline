@@ -1,8 +1,7 @@
 import { PrismaClient } from "../../generated/prisma/index.js";
 import { publishToQueue } from "../queues/rabbitmq.ts";
 import { ProposalInput } from "../validators/proposalSchema.ts";
-
-const prisma = new PrismaClient();
+import prisma from "./database.service.ts";
 
 export const createProposalService = async ({ CPF, fullName, income }: ProposalInput) => {
   
