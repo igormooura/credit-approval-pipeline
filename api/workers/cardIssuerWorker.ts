@@ -6,5 +6,5 @@ export const cardIssuerWorker = async() =>{
     const cardIssuerQueue = process.env.CARD_ISSUER_QUEUEU
     
     if(!exchangeName || !cardIssuerQueue) throw new Error("Card queue or Exchange name not defined")
-    await bindQueueToExchange(exchangeName, cardIssuerQueue)
+    await bindQueueToExchange(cardIssuerQueue, exchangeName)
 }
