@@ -3,7 +3,7 @@ import { publishToQueue } from "../queues/rabbitmq.ts";
 import { ProposalInput } from "../validators/proposalSchema.ts";
 import prisma from "./database.service.ts";
 
-export const createProposalService = async ({ CPF, fullName, income }: ProposalInput) => {
+export const createProposalService = async ({ CPF, fullName, email ,income }: ProposalInput) => {
   
   const CREDIT_ANALYSIS_QUEUE = process.env.CREDIT_ANALYSIS_QUEUE;
   
@@ -18,6 +18,7 @@ export const createProposalService = async ({ CPF, fullName, income }: ProposalI
     data: {
       CPF,
       fullName,
+      email,
       income,
       status: "RECEIVED",
     },
