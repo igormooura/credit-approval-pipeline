@@ -22,14 +22,14 @@ const fraudAnalysisHandler = async (msg: any) => {
 
 export const fraudAnalysisWorker = async () => {
     try {
-        const creditAnalysisQueue = process.env.CREDIT_ANALYSIS_QUEUE;
+        const FRAUD_ANALYSIS_QUEUE = process.env.FRAUD_ANALYSIS_QUEUE;
 
-        if (!creditAnalysisQueue) {
+        if (!FRAUD_ANALYSIS_QUEUE) {
             console.log("CREDIT_ANALYSIS_QUEUE not set");
             return;
         }
 
-        await consumeQueue(creditAnalysisQueue, fraudAnalysisHandler);
+        await consumeQueue(FRAUD_ANALYSIS_QUEUE, fraudAnalysisHandler);
     } catch (error) {
         console.error("fraudAnalysisWorker fatal error:", error);
     }
