@@ -15,7 +15,7 @@ export const creditAnalysisWorker = async ( ) => {
         const proposals_queue = process.env.PROPOSALS_QUEUE
         if (!proposals_queue) throw new Error ("No queue defined")
 
-        await consumeQueue(proposals_queue, creditAnalysisHandler)
+        await consumeQueue(proposals_queue, creditAnalysisHandler) //mudar depois pra credit_queue
 
     } catch(error: any) { 
        console.error(error.message);
