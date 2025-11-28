@@ -12,10 +12,10 @@ const creditAnalysisHandler = async(msg: any) =>{
 export const creditAnalysisWorker = async ( ) => { 
     try{ 
 
-        const proposals_queue = process.env.PROPOSALS_QUEUE
-        if (!proposals_queue) throw new Error ("No queue defined")
+        const CREDIT_ANALYSIS_QUEUE = process.env.CREDIT_ANALYSIS_QUEUE
+        if (!CREDIT_ANALYSIS_QUEUE) throw new Error ("No queue defined")
 
-        await consumeQueue(proposals_queue, creditAnalysisHandler) //mudar depois pra credit_queue
+        await consumeQueue(CREDIT_ANALYSIS_QUEUE, creditAnalysisHandler) 
 
     } catch(error: any) { 
        console.error(error.message);

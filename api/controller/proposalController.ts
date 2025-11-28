@@ -4,10 +4,6 @@ import { proposalSchema } from "../validators/proposalSchema.ts";
 
 export const createProposalController = async (req: Request, res: Response): Promise<void> => {
   try {
-  
-    const proposals_queue = process.env.PROPOSALS_QUEUE;
-
-    if (!proposals_queue) throw new Error("PROPOSALS_QUEUE environment variable is not set.");
     
     const data = proposalSchema.parse(req.body);
 

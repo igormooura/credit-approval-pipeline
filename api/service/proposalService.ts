@@ -5,9 +5,9 @@ import prisma from "./database.service.ts";
 
 export const createProposalService = async ({ CPF, fullName, income }: ProposalInput) => {
   
-  const proposals_queue = process.env.PROPOSALS_QUEUE;
+  const CREDIT_ANALYSIS_QUEUE = process.env.CREDIT_ANALYSIS_QUEUE;
   
-  if(!proposals_queue) throw new Error("NO proposal's queue")
+  if(!CREDIT_ANALYSIS_QUEUE) throw new Error("NO proposal's queue")
 
   const existing = await prisma.proposal.findUnique({ where: { CPF } });
   if (existing) {
@@ -23,7 +23,7 @@ export const createProposalService = async ({ CPF, fullName, income }: ProposalI
     },
   });
 
-  await publishToQueue(proposals_queue, { proposalId: proposal.id });
+  await publishToQueue(CREDIT_ANALYSIS_QUEUE, { proposalId: proposal.id });
 
   return proposal;
 };
