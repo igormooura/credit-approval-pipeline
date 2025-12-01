@@ -1,4 +1,4 @@
-import { connectWithRabbitMQ, bindQueueToExchange, consumeQueue } from "../queues/rabbitmq";
+import { bindQueueToExchange, consumeQueue } from "../queues/rabbitmq";
 
 const handleCardIssue = async (msg: any) => {
     const { customerName, cardType } = msg;
@@ -12,7 +12,6 @@ const handleCardIssue = async (msg: any) => {
 
 export const cardIssuerWorker = async () => {
     try {
-        await connectWithRabbitMQ();
 
         const exchangeName = process.env.APPROVED_EXCHANGE;
         const cardIssuerQueue = process.env.CARD_ISSUER_QUEUE;
