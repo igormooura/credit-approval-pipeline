@@ -28,7 +28,7 @@ export const marketingHandler = async (msg: any) => {
 
 export const marketingWorker = async () => {
     try {
-        await connectWithRabbitMQ();
+        
 
         const exchangeName = process.env.APPROVED_EXCHANGE;
         const marketingQueue = process.env.MARKETING_QUEUE;

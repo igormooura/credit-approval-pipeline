@@ -13,7 +13,7 @@ export const connectWithRabbitMQ = async (): Promise<amqp.Channel> => {
 
     channel = await connection.createChannel();
 
-    console.log("Connectew w/ RabbitMQ");
+    console.log("Connected w/ RabbitMQ");
 
     return channel;
   } catch (error) {
