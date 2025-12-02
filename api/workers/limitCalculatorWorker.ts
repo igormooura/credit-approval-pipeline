@@ -20,7 +20,7 @@ const limitCalculatorHandler = async (msg: any) => {
 };
 
 export const limitCalculatorWorker = async () => {
-    const queue = process.env.FRAUD_QUEUE;
+    const queue = process.env.FRAUD_ANALYSIS_QUEUE;
     if (!queue) throw new Error("FRAUD_QUEUE is not defined");
 
     await consumeQueue(queue, limitCalculatorHandler);
