@@ -7,6 +7,7 @@ import { creditAnalysisWorker } from './workers/creditAnalysisWorker.ts';
 import { fraudAnalysisWorker } from './workers/fraudAnalysisWorker.ts';
 import { limitCalculatorWorker } from './workers/limitCalculatorWorker.ts';
 import { cardIssuerWorker } from './workers/cardIssuerWorker.ts';
+import { marketingWorker } from './workers/marketingWorker.ts';
 
 configDotenv()
 
@@ -28,6 +29,7 @@ async function startApp(){
      await limitCalculatorWorker();
     
      await cardIssuerWorker();
+     await marketingWorker();
 
     server.listen(3000, () =>{
       console.log("Running on 3000")
