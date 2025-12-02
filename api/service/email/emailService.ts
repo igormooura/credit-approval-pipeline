@@ -1,5 +1,5 @@
 import { SendEmailCommand } from "@aws-sdk/client-ses";
-import { sesClient } from "./sesClient.js";
+import { sesClient } from "./sesClient.ts";
 
 interface EmailData{
     to: string,

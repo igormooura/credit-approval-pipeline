@@ -1,5 +1,5 @@
-import { publishToQueue } from "../queues/rabbitmq.js";
-import prisma from "./database.service.js";
+import { publishToQueue } from "../queues/rabbitmq.ts";
+import prisma from "./database.service.ts";
 
 export const fraudAnalysisService = async (proposalId: string) => {
   const proposal = await prisma.proposal.findUnique({
