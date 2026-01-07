@@ -24,12 +24,11 @@ async function startApp(){
 
     await connectWithRabbitMQ();
 
-     await creditAnalysisWorker();
-     await fraudAnalysisWorker();
-     await limitCalculatorWorker();
-    
-     await cardIssuerWorker();
-     await marketingWorker();
+    creditAnalysisWorker().catch(console.error);
+    fraudAnalysisWorker().catch(console.error);
+    limitCalculatorWorker().catch(console.error);
+    cardIssuerWorker().catch(console.error);
+    marketingWorker().catch(console.error);
 
     server.listen(3000, () =>{
       console.log("Running on 3000")
