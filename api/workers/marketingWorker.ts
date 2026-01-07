@@ -3,7 +3,8 @@ import { sendEmail } from "../service/email/emailService";
 
 export const marketingHandler = async (msg: any) => {
     try {
-        const { email, customerName, cardType, limit } = msg;
+        const data = JSON.parse(msg.content.toString());
+        const { email, customerName, cardType, limit } = data;
 
         if (!email) return;
 

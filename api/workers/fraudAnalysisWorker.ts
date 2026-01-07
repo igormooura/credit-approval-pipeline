@@ -1,21 +1,21 @@
-import { consumeQueue } from "../queues/rabbitmq";
+import { channel, consumeQueue } from "../queues/rabbitmq";
 import { fraudAnalysisService } from "../service/fraudAnalysisService";
 
 const fraudAnalysisHandler = async (msg: any) => {
     try {
         const content = JSON.parse(msg.content.toString());
-        const proposalId = content.proposalId;
+        const proposalId = content.id;
 
         if (!proposalId) throw new Error("There's no proposal id");
 
         await fraudAnalysisService(proposalId);
         await new Promise(resolve => setTimeout(resolve, 500));
 
-        msg.ack();
+        channel.ack(msg);
     } catch (error) {
         console.error("fraudAnalysisWorker error:", error);
 
-        msg.nack(false, false);
+        channel.nack(msg, false, false);
     }
 };
 
