@@ -6,7 +6,7 @@ const handleCardIssue = async (msg: any) => {
     if (cardType === 'PLATINUM') {
         console.log(`${customerName} platinum card sent to production`);
     } else {
-        console.log(`Generating PLASTIC card for ${customerName}`);
+        console.log(`Generating PLASTIC card for ${customerName}`); // undefined!!!
     }
 };
 

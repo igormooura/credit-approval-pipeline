@@ -1,5 +1,5 @@
-import { publishToExchange } from "../queues/rabbitmq";
-import prisma from "./database.service";
+import { publishToExchange } from "../queues/rabbitmq.ts";
+import prisma from "./database.service.ts";
 
 export enum CardTier {
   PLATINUM = "PLATINUM",
@@ -28,7 +28,7 @@ export const limitCalculatorService = async (proposalId: string) => {
   }
 
   const calculatedLimit = proposal.income * limitMultiplier;
-
+  
   const updatedProposal = await prisma.proposal.update({
     where: { id: proposalId },
     data: {
@@ -38,7 +38,7 @@ export const limitCalculatorService = async (proposalId: string) => {
   });
 
   if(!process.env.APPROVED_EXCHANGE) throw new Error("No approved Exchange")
-
+  
   await publishToExchange(process.env.APPROVED_EXCHANGE, {
     proposalId: updatedProposal.id,
     customerName: updatedProposal.fullName,

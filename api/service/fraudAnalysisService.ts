@@ -26,8 +26,9 @@ export const fraudAnalysisService = async (proposalId: string) => {
   });
 
   if (isSafe) {
-    if (process.env.LIMIT_CALCULATION_QUEUE) {
-      await publishToQueue(process.env.LIMIT_CALCULATION_QUEUE, { proposalId: updatedProposal.id });
+    const queue = process.env.LIMIT_CALCULATOR_QUEUE;
+    if (queue) {
+      await publishToQueue(queue, { proposalId: updatedProposal.id });
     }
   }
 

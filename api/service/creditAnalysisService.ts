@@ -24,7 +24,7 @@ export const creditAnalysisService = async (proposalId: string) => {
 
   const FRAUD_ANALYSIS_QUEUE = process.env.FRAUD_ANALYSIS_QUEUE;
   if (FRAUD_ANALYSIS_QUEUE) {
-    await publishToQueue(FRAUD_ANALYSIS_QUEUE, updatedProposal);
+    await publishToQueue(FRAUD_ANALYSIS_QUEUE, { proposalId: updatedProposal.id });
   }
 
   return updatedProposal;
