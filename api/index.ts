@@ -4,6 +4,10 @@ import { configDotenv } from 'dotenv';
 import { connectWithRabbitMQ } from './queues/rabbitmq.ts';
 import router from './router/proposalRoutes.ts';
 import { creditAnalysisWorker } from './workers/creditAnalysisWorker.ts';
+import { fraudAnalysisWorker } from './workers/fraudAnalysisWorker.ts';
+import { limitCalculatorWorker } from './workers/limitCalculatorWorker.ts';
+import { cardIssuerWorker } from './workers/cardIssuerWorker.ts';
+import { marketingWorker } from './workers/marketingWorker.ts';
 
 configDotenv()
 
@@ -20,7 +24,11 @@ async function startApp(){
 
     await connectWithRabbitMQ();
 
-     await creditAnalysisWorker();
+    creditAnalysisWorker().catch(console.error);
+    fraudAnalysisWorker().catch(console.error);
+    limitCalculatorWorker().catch(console.error);
+    cardIssuerWorker().catch(console.error);
+    marketingWorker().catch(console.error);
 
     server.listen(3000, () =>{
       console.log("Running on 3000")

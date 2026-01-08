@@ -1,6 +1,6 @@
 import amqp from "amqplib";
 
-let channel: amqp.Channel;
+export let channel: amqp.Channel;
 
 
 export const connectWithRabbitMQ = async (): Promise<amqp.Channel> => {
@@ -13,7 +13,7 @@ export const connectWithRabbitMQ = async (): Promise<amqp.Channel> => {
 
     channel = await connection.createChannel();
 
-    console.log("Connectew w/ RabbitMQ");
+    console.log("Connected w/ RabbitMQ");
 
     return channel;
   } catch (error) {
@@ -38,7 +38,6 @@ export const consumeQueue = async (queue: string, callback: (msg: amqp.ConsumeMe
   channel.consume(queue, (msg) => {
     if (msg) {
       callback(msg);
-      channel.ack(msg);
     }
   });
 };

@@ -1,5 +1,5 @@
-import { publishToExchange } from "../queues/rabbitmq.js";
-import prisma from "./database.service.js";
+import { publishToExchange } from "../queues/rabbitmq.ts";
+import prisma from "./database.service.ts";
 
 export enum CardTier {
   PLATINUM = "PLATINUM",
@@ -12,7 +12,7 @@ export const limitCalculatorService = async (proposalId: string) => {
     where: { id: proposalId },
   });
 
-  if (!proposal || !proposal.creditScore || !proposal.fraudCheckResult) {
+  if (!proposal || proposal.creditScore === null || proposal.fraudCheckResult === null) {
     throw new Error(`Proposal ${proposalId} incomplete or not found`);
   }
 
@@ -28,7 +28,7 @@ export const limitCalculatorService = async (proposalId: string) => {
   }
 
   const calculatedLimit = proposal.income * limitMultiplier;
-
+  
   const updatedProposal = await prisma.proposal.update({
     where: { id: proposalId },
     data: {
@@ -38,10 +38,11 @@ export const limitCalculatorService = async (proposalId: string) => {
   });
 
   if(!process.env.APPROVED_EXCHANGE) throw new Error("No approved Exchange")
-
+  
   await publishToExchange(process.env.APPROVED_EXCHANGE, {
     proposalId: updatedProposal.id,
     customerName: updatedProposal.fullName,
+    email: updatedProposal.email,
     cardType: cardType,
     limit: calculatedLimit,
   });

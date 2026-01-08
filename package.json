@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/igormooura/credit-approval-pipeline#readme",
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.940.0",
     "@prisma/client": "^6.18.0",
     "amqplib": "^0.10.9",
     "dotenv": "^17.2.3",

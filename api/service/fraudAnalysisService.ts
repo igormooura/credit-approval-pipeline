@@ -1,5 +1,5 @@
-import { publishToQueue } from "../queues/rabbitmq.js";
-import prisma from "./database.service.js";
+import { publishToQueue } from "../queues/rabbitmq.ts";
+import prisma from "./database.service.ts";
 
 export const fraudAnalysisService = async (proposalId: string) => {
   const proposal = await prisma.proposal.findUnique({
@@ -26,8 +26,9 @@ export const fraudAnalysisService = async (proposalId: string) => {
   });
 
   if (isSafe) {
-    if (process.env.LIMIT_CALCULATION_QUEUE) {
-      await publishToQueue(process.env.LIMIT_CALCULATION_QUEUE, { proposalId: updatedProposal.id });
+    const queue = process.env.LIMIT_CALCULATOR_QUEUE;
+    if (queue) {
+      await publishToQueue(queue, { proposalId: updatedProposal.id });
     }
   }
 

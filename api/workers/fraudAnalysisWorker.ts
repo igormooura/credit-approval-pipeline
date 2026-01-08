@@ -1,4 +1,4 @@
-import { consumeQueue } from "../queues/rabbitmq";
+import { channel, consumeQueue } from "../queues/rabbitmq";
 import { fraudAnalysisService } from "../service/fraudAnalysisService";
 
 const fraudAnalysisHandler = async (msg: any) => {
@@ -9,27 +9,24 @@ const fraudAnalysisHandler = async (msg: any) => {
         if (!proposalId) throw new Error("There's no proposal id");
 
         await fraudAnalysisService(proposalId);
-        await new Promise(resolve => setTimeout(resolve, 500));
 
-        msg.ack();
+        channel.ack(msg);
     } catch (error) {
         console.error("fraudAnalysisWorker error:", error);
-
-        msg.nack(false, false);
+        channel.nack(msg, false, false);
     }
 };
 
-
 export const fraudAnalysisWorker = async () => {
     try {
-        const creditAnalysisQueue = process.env.CREDIT_ANALYSIS_QUEUE;
+        const FRAUD_ANALYSIS_QUEUE = process.env.FRAUD_ANALYSIS_QUEUE;
 
-        if (!creditAnalysisQueue) {
-            console.log("CREDIT_ANALYSIS_QUEUE not set");
+        if (!FRAUD_ANALYSIS_QUEUE) {
+            console.log("FRAUD_ANALYSIS_QUEUE not set");
             return;
         }
 
-        await consumeQueue(creditAnalysisQueue, fraudAnalysisHandler);
+        await consumeQueue(FRAUD_ANALYSIS_QUEUE, fraudAnalysisHandler);
     } catch (error) {
         console.error("fraudAnalysisWorker fatal error:", error);
     }
