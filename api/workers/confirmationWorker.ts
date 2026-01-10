@@ -1,26 +1,14 @@
-import { consumeQueue } from "../queues/rabbitmq";
-import { sendEmail } from "../service/email/emailService";
+import { channel, consumeQueue } from "../queues/rabbitmq";
+import { confirmationService } from "../service/confirmationService";
 
 const confirmationHandler = async (msg: any) => {
   try {
     const content = JSON.parse(msg.content.toString());
-    const { email, fullName } = content;
-    if (content) {
-      const subject = "We received your application!";
-      const html = `
-    <h3>Hello, ${fullName}!</h3>
-    <p>We have received your credit card application.</p>
-    <p>Our artificial intelligence is already analyzing your profile.</p>
-    <p>You will receive another email shortly with the result.</p>`;
-
-      await sendEmail({ to: email, subject, html });
-
-
-    } else {
-      console.log("No content at confirmationHandler");
-    }
+    
+    await confirmationService({  email: content.email,  fullName: content.fullName });
+    
   } catch (error: any) {
-    console.log("Error at confirmation Handler: ", error);
+    console.error(error.message);
   }
 };
 
