@@ -8,16 +8,16 @@ import { sendEmail } from "../service/email/emailService";
 export const marketingHandler = async (msg: any) => {
   try {
     const data = JSON.parse(msg.content.toString());
-    const { email, customerName, cardType, limit } = data;
+    const { email, fullName, cardType, limit } = data;
 
     if (!email) return;
 
     let subject = "Welcome to the Bank!";
-    let htmlContent = `<p>Hello <strong>${customerName}</strong>,</p><p>Your card has been approved with a limit of <strong>$${limit}</strong>.</p>`;
+    let htmlContent = `<p>Hello <strong>${fullName}</strong>,</p><p>Your card has been approved with a limit of <strong>$${limit}</strong>.</p>`;
 
     if (cardType === "PLATINUM") {
       subject = "Congratulations! You are Platinum.";
-      htmlContent = `<p>Hello VIP <strong>${customerName}</strong>!</p><p>Your metal card is being prepared. You earned <strong>10,000 miles</strong>.</p>`;
+      htmlContent = `<p>Hello VIP <strong>${fullName}</strong>!</p><p>Your metal card is being prepared. You earned <strong>10,000 miles</strong>.</p>`;
     }
 
     await sendEmail({
