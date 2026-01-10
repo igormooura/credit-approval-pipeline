@@ -5,6 +5,7 @@ import prisma from "./database.service.ts";
 export const createProposalService = async ({ CPF, fullName, email ,income }: ProposalInput) => {
   
   const CREDIT_ANALYSIS_QUEUE = process.env.CREDIT_ANALYSIS_QUEUE;
+  const CONFIRMATION_QUEUE = process.env.CONFIRMATION_QUEUE;
   
   if(!CREDIT_ANALYSIS_QUEUE) throw new Error("NO proposal's queue")
 
@@ -24,6 +25,8 @@ export const createProposalService = async ({ CPF, fullName, email ,income }: Pr
   });
 
   await publishToQueue(CREDIT_ANALYSIS_QUEUE, { proposalId: proposal.id });
+
+  await publishToQueue(CONFIRMATION_QUEUE, { email: proposal.email, fullName: proposal.fullName })
 
   return proposal;
 };
