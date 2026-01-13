@@ -7,7 +7,8 @@ export const createProposalService = async ({ CPF, fullName, email ,income }: Pr
   const CREDIT_ANALYSIS_QUEUE = process.env.CREDIT_ANALYSIS_QUEUE;
   const CONFIRMATION_QUEUE = process.env.CONFIRMATION_QUEUE;
   
-  if(!CREDIT_ANALYSIS_QUEUE) throw new Error("NO proposal's queue")
+  if(!CREDIT_ANALYSIS_QUEUE) throw new Error("NO proposal's queue");
+  if(!CONFIRMATION_QUEUE) throw new Error("No confirmation queue");
 
   const existing = await prisma.proposal.findUnique({ where: { CPF } });
   if (existing) {
