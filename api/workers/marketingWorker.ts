@@ -1,47 +1,43 @@
 import {
-  connectWithRabbitMQ,
   bindQueueToExchange,
   consumeQueue,
 } from "../queues/rabbitmq";
-import { sendEmail } from "../service/email/emailService";
+import { sendApprovedEmail, sendRejectedEmail } from "../service/marketingService";
 
-export const marketingHandler = async (msg: any) => {
+export const marketingApprovedHandler = async (msg: any) => {
   try {
     const data = JSON.parse(msg.content.toString());
-    const { email, fullName, cardType, limit } = data;
-
-    if (!email) return;
-
-    let subject = "Welcome to the Bank!";
-    let htmlContent = `<p>Hello <strong>${fullName}</strong>,</p><p>Your card has been approved with a limit of <strong>$${limit}</strong>.</p>`;
-
-    if (cardType === "PLATINUM") {
-      subject = "Congratulations! You are Platinum.";
-      htmlContent = `<p>Hello VIP <strong>${fullName}</strong>!</p><p>Your metal card is being prepared. You earned <strong>10,000 miles</strong>.</p>`;
-    }
-
-    await sendEmail({
-      to: email,
-      subject: subject,
-      html: htmlContent,
-    });
+    await sendApprovedEmail(data);
   } catch (error) {
-    console.error(error);
+    console.error("Marketing Approved Handler Error:", error);
+  }
+};
+
+export const rejectMarketingHandler = async (msg: any) => {
+  try {
+    const { proposalId } = JSON.parse(msg.content.toString());
+    await sendRejectedEmail(proposalId);
+  } catch (error) {
+    console.error("Marketing Reject Handler Error:", error);
   }
 };
 
 export const marketingWorker = async () => {
   try {
-    const exchangeName = process.env.APPROVED_EXCHANGE;
+    const approvedExchange = process.env.APPROVED_EXCHANGE;
     const marketingQueue = process.env.MARKETING_QUEUE;
+    const rejectedQueue = process.env.NOT_SAFE_QUEUE;
 
-    if (!exchangeName || !marketingQueue)
-      throw new Error("Marketing queue or Exchange name not defined");
+    if (!approvedExchange || !marketingQueue || !rejectedQueue) {
+      throw new Error("Marketing queues or exchange not defined");
+    }
 
-    await bindQueueToExchange(marketingQueue, exchangeName);
+    await bindQueueToExchange(marketingQueue, approvedExchange);
+    await consumeQueue(marketingQueue, marketingApprovedHandler);
 
-    await consumeQueue(marketingQueue, marketingHandler);
+    await consumeQueue(rejectedQueue, rejectMarketingHandler);
+
   } catch (error) {
-    console.error(error);
+    console.error("Marketing Worker Error:", error);
   }
 };
