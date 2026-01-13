@@ -10,10 +10,8 @@ const fraudAnalysisHandler = async (msg: any) => {
 
         await fraudAnalysisService(proposalId);
 
-        channel.ack(msg);
     } catch (error) {
         console.error("fraudAnalysisWorker error:", error);
-        channel.nack(msg, false, false);
     }
 };
 

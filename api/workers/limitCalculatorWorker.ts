@@ -10,11 +10,9 @@ const limitCalculatorHandler = async (msg: any) => {
         if (!proposalId) throw new Error("Missing proposalId");
 
         await limitCalculatorService(proposalId);
-        
-        channel.ack(msg); 
+
     } catch (error) {
         console.error("limitCalculatorWorker error:", error);
-        channel.nack(msg, false, true);
     }
 };
 

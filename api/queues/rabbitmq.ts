@@ -35,10 +35,17 @@ export const publishToQueue = async (queue: string, message: object) => {
 export const consumeQueue = async (queue: string, callback: (msg: amqp.ConsumeMessage) => void) => {
   if (!channel) throw new Error("RabbitMQ channel not initialized");
   await channel.assertQueue(queue, { durable: true });
-  channel.consume(queue, (msg) => {
-    if (msg) {
-      callback(msg);
+  channel.consume(queue, async (msg: any) => {
+    if (!msg) return;
+
+    try {
+      await callback(msg);
+      channel.ack(msg); 
+    } catch (error) {
+      console.error("Consume error:", error);
+      channel.nack(msg, false, false); 
     }
+    
   });
 };
 

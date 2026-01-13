@@ -1,12 +1,12 @@
 import { bindQueueToExchange, consumeQueue } from "../queues/rabbitmq";
 
 const handleCardIssue = async (msg: any) => {
-    const { customerName, cardType } = msg;
+    const { fullName, cardType } = msg;
 
     if (cardType === 'PLATINUM') {
-        console.log(`${customerName} platinum card sent to production`);
+        console.log(`${fullName} platinum card sent to production`);
     } else {
-        console.log(`Generating PLASTIC card for ${customerName}`); // undefined!!!
+        console.log(`Generating PLASTIC card for ${fullName}`);
     }
 };
 

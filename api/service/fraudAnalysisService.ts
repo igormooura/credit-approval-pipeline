@@ -26,10 +26,17 @@ export const fraudAnalysisService = async (proposalId: string) => {
   });
 
   if (isSafe) {
-    const queue = process.env.LIMIT_CALCULATOR_QUEUE;
-    if (queue) {
-      await publishToQueue(queue, { proposalId: updatedProposal.id });
+    const isSafeQueue = process.env.LIMIT_CALCULATOR_QUEUE;
+    if (isSafeQueue) {
+      await publishToQueue(isSafeQueue, { proposalId: updatedProposal.id });
     }
+  } else { 
+    const notSafeQueue = process.env.NOT_SAFE_QUEUE;
+    
+    if(!notSafeQueue) throw new Error ("notSafeQueue not set");
+    await publishToQueue(notSafeQueue, { proposalId: updatedProposal.id });
+    
+
   }
 
   return updatedProposal;
