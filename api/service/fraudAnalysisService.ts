@@ -1,4 +1,4 @@
-import { publishToQueue } from "../queues/rabbitmq.ts";
+import { publishToExchange, publishToQueue } from "../queues/rabbitmq.ts";
 import prisma from "./database.service.ts";
 
 export const fraudAnalysisService = async (proposalId: string) => {
@@ -31,11 +31,11 @@ export const fraudAnalysisService = async (proposalId: string) => {
       await publishToQueue(isSafeQueue, { proposalId: updatedProposal.id });
     }
   } else { 
-    const notSafeQueue = process.env.NOT_SAFE_QUEUE;
-    
-    if(!notSafeQueue) throw new Error ("notSafeQueue not set");
-    await publishToQueue(notSafeQueue, { proposalId: updatedProposal.id });
-    
+    const rejectedExchange = process.env.REJECTED_EXCHANGE;
+
+    if(!rejectedExchange) throw new Error("REJECTED_EXCHANGE not set");
+
+    await publishToExchange(rejectedExchange, { proposalId: updatedProposal.id })
 
   }
 

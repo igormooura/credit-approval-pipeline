@@ -3,8 +3,8 @@ import { waitForStatus } from '../utils/waitStatus';
 import prisma from '../../api/service/database.service';
 
 const API_URL = 'http://localhost:3000';
-const TEST_EMAIL = process.env.TEST_EMAIL as string;
-const TEST_EMAIL2 = process.env.TEST_EMAIL2 as string;
+const TEST_EMAIL2 = process.env.TEST_EMAIL as string; //needed
+const TEST_EMAIL = process.env.TEST_EMAIL2 as string;
 
 
 describe('E2E - Full Pipeline', () => {
