@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx ts-node api/index.ts",
+    "test": "jest tests/unit",
+    "test:e2e": "jest tests/e2e --forceExit",
+    "test:all": "jest --forceExit",
+    "test:watch": "jest --watch tests/unit"
   },
   "repository": {
     "type": "git",
@@ -29,10 +33,12 @@
     "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.0",
+    "@types/supertest": "^6.0.3",
     "jest": "^30.2.0",
     "nodemon": "^3.1.10",
     "prisma": "^6.18.0",
-    "ts-jest": "^29.4.5",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
