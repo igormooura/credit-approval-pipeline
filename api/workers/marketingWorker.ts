@@ -26,16 +26,16 @@ export const marketingWorker = async () => {
   try {
     const approvedExchange = process.env.APPROVED_EXCHANGE;
     const marketingQueue = process.env.MARKETING_QUEUE;
-    const rejectedQueue = process.env.NOT_SAFE_QUEUE;
+    const notSafeQueue = process.env.NOT_SAFE_QUEUE;
 
-    if (!approvedExchange || !marketingQueue || !rejectedQueue) {
+    if (!approvedExchange || !marketingQueue || !notSafeQueue) {
       throw new Error("Marketing queues or exchange not defined");
     }
 
     await bindQueueToExchange(marketingQueue, approvedExchange);
     await consumeQueue(marketingQueue, marketingApprovedHandler);
 
-    await consumeQueue(rejectedQueue, rejectMarketingHandler);
+    await consumeQueue(notSafeQueue, rejectMarketingHandler);
 
   } catch (error) {
     console.error("Marketing Worker Error:", error);
