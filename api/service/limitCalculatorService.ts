@@ -34,6 +34,7 @@ export const limitCalculatorService = async (proposalId: string) => {
     data: {
       status: "APPROVED",
       calculatedLimit: calculatedLimit,
+      cardType: cardType,
     },
   });
 
