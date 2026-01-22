@@ -9,7 +9,7 @@ export const creditAnalysisService = async (proposalId: string) => {
 
   if (!proposal) throw new Error(`Proposal with ID ${proposalId} not found`);
 
-  const score = Math.floor(Math.random() * (900 - 300 + 1)) + 300;
+  const score = Math.floor(Math.random() * (1200 - 300 + 1)) + 300;
   
   const nextStatus = "PENDING_IDENTITY_CHECK"
 
