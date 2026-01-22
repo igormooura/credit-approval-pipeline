@@ -3,7 +3,6 @@ import prisma from "./database.service.ts";
 
 export enum CardTier {
   PLATINUM = "PLATINUM",
-  GOLD = "GOLD",
   STANDARD = "STANDARD",
 }
 
@@ -22,10 +21,7 @@ export const limitCalculatorService = async (proposalId: string) => {
   if (proposal.creditScore > 900 && proposal.income >= 10000) {
     cardType = CardTier.PLATINUM;
     limitMultiplier = 1.5;
-  } else if (proposal.creditScore > 700) {
-    cardType = CardTier.GOLD;
-    limitMultiplier = 0.8;
-  }
+  } 
 
   const calculatedLimit = proposal.income * limitMultiplier;
   
