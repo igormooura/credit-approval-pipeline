@@ -9,6 +9,7 @@ import { limitCalculatorWorker } from './workers/limitCalculatorWorker.ts';
 import { cardIssuerWorker } from './workers/cardIssuerWorker.ts';
 import { marketingWorker } from './workers/marketingWorker.ts';
 import { confirmationWorker } from './workers/confirmationWorker.ts';
+import cors from 'cors';
 
 configDotenv()
 
@@ -16,7 +17,7 @@ const app = express()
 const server = createServer(app)
 
 
-
+app.use(cors());
 app.use(express.json());
 app.use(router)
 

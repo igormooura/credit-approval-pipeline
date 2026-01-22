@@ -24,12 +24,14 @@
     "@aws-sdk/client-ses": "^3.940.0",
     "@prisma/client": "^6.18.0",
     "amqplib": "^0.10.9",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.8",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.0",
