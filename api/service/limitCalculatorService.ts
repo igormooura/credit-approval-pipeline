@@ -12,7 +12,7 @@ export const limitCalculatorService = async (proposalId: string) => {
     where: { id: proposalId },
   });
 
-  if (!proposal || proposal.creditScore === null || proposal.fraudCheckResult === null) {
+  if (!proposal || !proposal.creditScore || !proposal.fraudCheckResult) {
     throw new Error(`Proposal ${proposalId} incomplete or not found`);
   }
 

@@ -134,4 +134,31 @@ describe('E2E - Full Pipeline', () => {
         expect(finalProposal.status).not.toBe('PENDING');
     });
 
+    it("Scenario 5: fraud rejection due to single name", async() => { 
+        const response = await request(API_URL)
+            .post("/proposals")
+            .send({
+                CPF:'11122233344',
+                fullName: 'Igor',
+                email: TEST_EMAIL,
+                income: 10000
+            });
+
+        expect([200, 201, 202]).toContain(response.status);
+
+        const proposal = await prisma.proposal.findFirst({
+            where: { email: TEST_EMAIL },
+            orderBy: { createdAt: 'desc'}
+        });
+
+        expect(proposal).not.toBeNull();
+
+        const final = await waitForStatus(proposal!.id, 'REJECTED');
+
+        expect(final.status).toBe('REJECTED');
+
+        expect(final.fraudCheckResult).toBe(false);
+
+    })
+
 });
