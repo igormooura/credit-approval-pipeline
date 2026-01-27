@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { createProposalService } from "../service/proposalService.ts";
 import { proposalSchema } from "../validators/proposalSchema.ts";
-import prisma from "../service/database.service.ts"; // Importe o Prisma
+import prisma from "../service/database.service.ts"; 
 
 export const createProposalController = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -10,7 +10,7 @@ export const createProposalController = async (req: Request, res: Response): Pro
 
     res.status(202).json({
       message: "Proposal created successfully",
-      id: proposal.id, // O frontend precisa desse ID
+      id: proposal.id,
     });
   } catch (error: any) {
     if (error.name === "ZodError") {
