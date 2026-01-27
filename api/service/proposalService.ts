@@ -12,7 +12,7 @@ export const createProposalService = async ({ CPF, fullName, email ,income }: Pr
 
   const existing = await prisma.proposal.findUnique({ where: { CPF } });
   if (existing) {
-    throw new Error("there's 1 person using this CPF");
+    throw new Error("There's 1 person using this CPF");
   }
 
   const proposal = await prisma.proposal.create({
@@ -25,10 +25,19 @@ export const createProposalService = async ({ CPF, fullName, email ,income }: Pr
     },
   });
 
-  await publishToQueue(CREDIT_ANALYSIS_QUEUE, { proposalId: proposal.id });
+  try {
+    await publishToQueue(CREDIT_ANALYSIS_QUEUE, { proposalId: proposal.id });
+    await publishToQueue(CONFIRMATION_QUEUE, { email: proposal.email, fullName: proposal.fullName });
+  } catch (error) {
+    console.error("Error publishing to queue. Performing rollback...", error);
+    
+    // if queue fails, delete from DB
+    await prisma.proposal.delete({
+        where: { id: proposal.id }
+    });
 
-  await publishToQueue(CONFIRMATION_QUEUE, { email: proposal.email, fullName: proposal.fullName })
+    throw new Error("Service unavailable. Please try again later.");
+  }
 
   return proposal;
 };
-

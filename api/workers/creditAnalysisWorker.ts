@@ -2,11 +2,17 @@ import { consumeQueue } from "../queues/rabbitmq.ts";
 import { creditAnalysisService } from "../service/creditAnalysisService.ts";
 
 const creditAnalysisHandler = async (msg: any) => {
-  const proposal_content = JSON.parse(msg.content.toString());
-  const proposalId = proposal_content.proposalId;
+  try {
+    const proposal_content = JSON.parse(msg.content.toString());
+    const proposalId = proposal_content.proposalId;
 
-  await creditAnalysisService(proposalId);
-  
+    if (!proposalId) throw new Error("Proposal ID missing in message");
+
+    await creditAnalysisService(proposalId);
+    
+  } catch (error: any) {
+    console.error(`error processing credit analysis: ${error.message}`);
+  }
 };
 
 export const creditAnalysisWorker = async () => {
@@ -16,6 +22,6 @@ export const creditAnalysisWorker = async () => {
 
     await consumeQueue(CREDIT_ANALYSIS_QUEUE, creditAnalysisHandler);
   } catch (error: any) {
-    console.error(error.message);
+    console.error("fatal error initializing creditAnalysisWorker:", error.message);
   }
 };
