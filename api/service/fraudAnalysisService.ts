@@ -1,5 +1,11 @@
-import { publishToExchange, publishToQueue } from "../queues/rabbitmq.ts";
-import prisma from "./database.service.ts";
+import { publishToExchange, publishToQueue } from "../queues/rabbitmq";
+import prisma from "./database.service";
+
+const isValidCPF = (cpf: string): boolean => {
+  const cleanCPF = cpf.replace(/[^\d]+/g, "");
+  if (cleanCPF.length !== 11 || !!cleanCPF.match(/(\d)\1{10}/)) return false;
+  return true;
+};
 
 export const fraudAnalysisService = async (proposalId: string) => {
   const proposal = await prisma.proposal.findUnique({
@@ -8,12 +14,20 @@ export const fraudAnalysisService = async (proposalId: string) => {
 
   if (!proposal) throw new Error(`Proposal ${proposalId} not found`);
 
+  const reasons: string[] = [];
+
   const hasValidName = proposal.fullName.trim().split(" ").length >= 2;
-  const isBlacklisted = proposal.CPF === "00000000000";
-  const isSuspiciousFinancial = proposal.income > 50000 && (proposal.creditScore || 0) < 400;
+  if (!hasValidName) reasons.push("Invalid name");
 
-  const isSafe = hasValidName && !isBlacklisted && !isSuspiciousFinancial;
+  const cpfValid = isValidCPF(proposal.CPF);
+  if (!cpfValid) reasons.push("Invalid CPF");
 
+  if (proposal.income <= 0) reasons.push("Invalid income");
+
+  const isSuspiciousFinancial = proposal.income > 20000 && (proposal.creditScore || 0) < 400;
+  if (isSuspiciousFinancial) reasons.push("Suspicious financial profile");
+
+  const isSafe = reasons.length === 0;
   const newStatus = isSafe ? "PENDING_LIMIT_CALCULATION" : "REJECTED";
 
   const updatedProposal = await prisma.proposal.update({
@@ -30,13 +44,12 @@ export const fraudAnalysisService = async (proposalId: string) => {
     if (isSafeQueue) {
       await publishToQueue(isSafeQueue, { proposalId: updatedProposal.id });
     }
-  } else { 
+  } else {
     const rejectedExchange = process.env.REJECTED_EXCHANGE;
+    if (!rejectedExchange) throw new Error("REJECTED_EXCHANGE not set");
 
-    if(!rejectedExchange) throw new Error("REJECTED_EXCHANGE not set");
-
-    await publishToExchange(rejectedExchange, { proposalId: updatedProposal.id })
-
+    console.log(`Fraud detected: ${reasons.join(", ")}`);
+    await publishToExchange(rejectedExchange, { proposalId: updatedProposal.id });
   }
 
   return updatedProposal;
