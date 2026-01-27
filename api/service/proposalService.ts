@@ -31,3 +31,4 @@ export const createProposalService = async ({ CPF, fullName, email ,income }: Pr
 
   return proposal;
 };
+
