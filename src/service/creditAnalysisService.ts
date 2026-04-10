@@ -1,5 +1,5 @@
-import { publishToQueue } from "../queues/rabbitmq";
-import prisma from "./database.service";
+import { publishToQueue } from "../../api/queues/rabbitmq";
+import prisma from "../../api/service/database.service";
 
 const calculateScore = (income: number, cpf: string): number => {
   let baseScore = 300;

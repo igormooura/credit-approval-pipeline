@@ -29,5 +29,83 @@ services:
       - "15672:15672"
     restart: always
 
+  credit_analysis_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: credit_analysis_container
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["npx", "ts-node", "src/workers/creditAnalysisWorker.ts"]
+    restart: always
+
+  limit_calculator_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: limit_calculator_container
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["npx", "ts-node", "src/workers/limitCalculatorWorker.ts"]
+    restart: always
+
+  fraud_analysis_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraud_analysis_container
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["npx", "ts-node", "src/workers/fraudAnalysisWorker.ts"]
+    restart: always
+
+  card_issuer_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: card_issuer_container
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["npx", "ts-node", "src/workers/cardIssuerWorker.ts"]
+    restart: always
+
+  marketing_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: marketing_container
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["npx", "ts-node", "src/workers/marketingWorker.ts"]
+    restart: always
+
+  confirmation_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: confirmation_container
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    command: ["npx", "ts-node", "src/workers/confirmationWorker.ts"]
+    restart: always
+
 volumes:
   postgres-data:

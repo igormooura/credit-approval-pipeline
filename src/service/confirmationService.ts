@@ -1,4 +1,4 @@
-import { sendEmail } from "./email/emailService";
+import { sendEmail } from "./email/emailService.ts";
 
 interface ConfirmationData {
   email: string;

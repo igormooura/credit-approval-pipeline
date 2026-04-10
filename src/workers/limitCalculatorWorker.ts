@@ -1,6 +1,5 @@
-import { consumeQueue } from "../queues/rabbitmq";
+import { consumeQueue } from "../../api/queues/rabbitmq";
 import { limitCalculatorService } from "../service/limitCalculatorService";
-import { channel } from "../queues/rabbitmq"; 
 
 const limitCalculatorHandler = async (msg: any) => {
     try {

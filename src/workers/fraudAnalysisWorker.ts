@@ -1,4 +1,4 @@
-import { channel, consumeQueue } from "../queues/rabbitmq";
+import { consumeQueue } from "../../api/queues/rabbitmq";
 import { fraudAnalysisService } from "../service/fraudAnalysisService";
 
 const fraudAnalysisHandler = async (msg: any) => {

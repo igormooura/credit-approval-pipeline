@@ -1,4 +1,4 @@
-import { bindQueueToExchange, consumeQueue } from "../queues/rabbitmq"; //
+import { bindQueueToExchange, consumeQueue } from "../../api/queues/rabbitmq";
 
 const handleCardIssue = async (msg: any) => {
 

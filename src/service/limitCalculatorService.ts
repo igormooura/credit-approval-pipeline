@@ -1,5 +1,5 @@
-import { publishToExchange } from "../queues/rabbitmq.ts";
-import prisma from "./database.service.ts";
+import { publishToExchange } from "../../api/queues/rabbitmq";
+import prisma from "../../api/service/database.service";
 
 export enum CardTier {
   PLATINUM = "PLATINUM",

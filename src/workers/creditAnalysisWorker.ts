@@ -1,4 +1,4 @@
-import { consumeQueue } from "../queues/rabbitmq.ts";
+import { consumeQueue } from "../../api/queues/rabbitmq.ts";
 import { creditAnalysisService } from "../service/creditAnalysisService.ts";
 
 const creditAnalysisHandler = async (msg: any) => {

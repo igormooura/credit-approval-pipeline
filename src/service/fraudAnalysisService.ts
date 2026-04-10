@@ -1,5 +1,5 @@
-import { publishToExchange, publishToQueue } from "../queues/rabbitmq";
-import prisma from "./database.service";
+import { publishToQueue, publishToExchange } from "../../api/queues/rabbitmq";
+import prisma from "../../api/service/database.service";
 
 const isValidCPF = (cpf: string): boolean => {
   const cleanCPF = cpf.replace(/[^\d]+/g, "");

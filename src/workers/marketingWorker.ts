@@ -1,4 +1,4 @@
-import { bindQueueToExchange, consumeQueue, } from "../queues/rabbitmq";
+import { bindQueueToExchange, consumeQueue } from "../../api/queues/rabbitmq";
 import { sendApprovedEmail, sendRejectedEmail } from "../service/marketingService";
 
 export const marketingApprovedHandler = async (msg: any) => {
